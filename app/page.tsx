@@ -1,103 +1,225 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { PostCard } from '@/components/PostCard';
+import { posts } from '@/data/posts';
+import type { Post } from '@/types/post';
+import { useMemo, useState } from 'react';
+
+type View = 'senha' | 'intro' | 'timeline';
+
+const SECRET_WORD = 'brigadeiro';
+
+type Grouped = Record<string, Post[]>;
+
+function groupByDate(list: Post[]): Grouped {
+  return list.reduce<Grouped>((acc, post) => {
+    if (!acc[post.date]) acc[post.date] = [];
+    acc[post.date].push(post);
+    return acc;
+  }, {});
+}
+
+// Formata "2025-09-07" -> "7 de setembro de 2025"
+function formatDisplayDate(dateStr: string): string {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  return dt.toLocaleDateString('pt-BR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  });
+}
+
+export default function HomePage() {
+  const [view, setView] = useState<View>('senha');
+  const [senha, setSenha] = useState('');
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 5; // 5 grupos de dias por página
+
+  // 👉 filtra posts pelo texto / título
+  const filteredPosts = useMemo(() => {
+    if (!search.trim()) return posts;
+    const q = search.toLowerCase();
+    return posts.filter((post) => {
+      const inText = post.text.toLowerCase().includes(q);
+      const inTitle = post.title?.toLowerCase().includes(q);
+      return inText || inTitle;
+    });
+  }, [search]);
+
+  const grouped = useMemo(() => groupByDate(filteredPosts), [filteredPosts]);
+
+  const sortedDates = useMemo(
+    () => Object.keys(grouped).sort((a, b) => b.localeCompare(a)),
+    [grouped]
+  );
+
+  const totalPages = Math.max(1, Math.ceil(sortedDates.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * pageSize;
+  const end = currentPage * pageSize;
+  const datesToShow = sortedDates.slice(start, end);
+
+  function handleSenhaSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (senha.trim().toLowerCase() === SECRET_WORD.toLowerCase()) {
+      // 👉 agora não salva mais em lugar nenhum, só muda o estado
+      setView('intro');
+    } else {
+      alert('Hmm… acho que essa não é a nossa palavrinha mágica. 😅');
+    }
+  }
+
+  function handleIntroContinue() {
+    setView('timeline');
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <main className='mx-auto flex min-h-screen max-w-2xl flex-col px-4 py-8 bg-rose-100'>
+      {/* TELA DE SENHA */}
+      {view === 'senha' && (
+        <section className='m-auto w-full max-w-sm rounded-2xl border border-rose-200 bg-rose-50 p-6 shadow-md shadow-rose-200'>
+          <h1 className='mb-3 text-xl font-semibold text-rose-800'>
+            Oi, Anita 👋
+          </h1>
+          <p className='mb-4 text-sm text-rose-700'>
+            Esse é um cantinho só nosso. Se você é{' '}
+            <span className='font-medium'>A</span> Anita certa, você sabe a
+            palavrinha mágica. ✨
+          </p>
+          <form onSubmit={handleSenhaSubmit} className='space-y-3'>
+            <input
+              type='password'
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              placeholder='Nossa palavrinha secreta'
+              className='w-full rounded-xl border border-rose-200 bg-white/90 px-3 py-2 text-sm text-rose-900 placeholder:text-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-400'
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <button
+              type='submit'
+              className='w-full rounded-xl bg-rose-500 px-3 py-2 text-sm font-medium text-rose-50 transition hover:bg-rose-400'
+            >
+              Entrar
+            </button>
+          </form>
+        </section>
+      )}
+
+      {/* INTRO */}
+      {view === 'intro' && (
+        <section className='m-auto w-full rounded-2xl border border-rose-200 bg-rose-50 p-6 shadow-md shadow-rose-200'>
+          <p className='mb-3 text-sm uppercase tracking-[0.2em] text-rose-500'>
+            Para Anita 💌
+          </p>
+          <h1 className='mb-4 text-2xl font-semibold text-rose-800'>
+            Um diáriozinho só pra você
+          </h1>
+          <p className='mb-3 whitespace-pre-line text-sm leading-relaxed text-rose-900'>
+            {`Oi, amor.
+
+Fiz esse lugarzinho pra deixar recados, pensamentos aleatórios e lembranças que eu tenho de você.
+
+Quando bater saudade, quando o dia estiver pesado, ou quando você só quiser um carinho em forma de texto, é só passar aqui.
+
+Mesmo quando não der pra eu falar contigo na hora, eu ainda tô aqui. 💕`}
+          </p>
+          <button
+            onClick={handleIntroContinue}
+            className='mt-4 w-full rounded-xl bg-rose-500 px-3 py-2 text-sm font-medium text-rose-50 transition hover:bg-rose-400'
           >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            Ver os recados ✨
+          </button>
+        </section>
+      )}
+
+      {/* TIMELINE */}
+      {view === 'timeline' && (
+        <>
+          <header className='mb-4'>
+            <p className='mb-1 text-xs uppercase tracking-[0.25em] text-rose-500'>
+              Para Anita
+            </p>
+            <h1 className='text-2xl font-semibold text-rose-800'>
+              Olá, Anita 💌
+            </h1>
+            <p className='mt-2 text-sm text-rose-700'>
+              Um fiozinho de pensamentos e recados meus pra você.
+            </p>
+          </header>
+
+          {/* BUSCA */}
+          <div className='mb-6'>
+            <input
+              type='text'
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
+              placeholder='Buscar um recado, palavra, sensação...'
+              className='w-full rounded-2xl border border-rose-200 bg-white/90 px-4 py-2 text-sm text-rose-900 placeholder:text-rose-400 focus:outline-none focus:ring-2 focus:ring-rose-400'
+            />
+          </div>
+
+          {/* POSTS */}
+          <section className='space-y-6'>
+            {datesToShow.map((date) => (
+              <div key={date} className='space-y-3'>
+                <div className='flex items-center gap-3'>
+                  <div className='h-px flex-1 bg-rose-200' />
+                  <span className='text-xs font-medium uppercase tracking-wide text-rose-500'>
+                    {formatDisplayDate(date)}
+                  </span>
+                  <div className='h-px flex-1 bg-rose-200' />
+                </div>
+
+                <div className='space-y-3'>
+                  {grouped[date].map((post) => (
+                    <PostCard key={post.id} post={post} />
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            {datesToShow.length === 0 && (
+              <p className='text-sm text-rose-700'>
+                Não achei nada com esse jeitinho de busca… tenta outra palavra?
+                💭
+              </p>
+            )}
+          </section>
+
+          {/* PAGINAÇÃO */}
+          {totalPages > 1 && (
+            <div className='mt-6 flex items-center justify-center gap-3'>
+              <button
+                type='button'
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className='rounded-full px-3 py-1 text-xs border border-rose-300 text-rose-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-rose-200/80'
+              >
+                ← Anterior
+              </button>
+              <span className='text-xs text-rose-700'>
+                Página {currentPage} de {totalPages}
+              </span>
+              <button
+                type='button'
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className='rounded-full px-3 py-1 text-xs border border-rose-300 text-rose-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-rose-200/80'
+              >
+                Próxima →
+              </button>
+            </div>
+          )}
+
+          <footer className='mt-10 border-t border-rose-200 pt-4 text-center text-[11px] text-rose-600'>
+            Feito com carinho só pra você, Anita. 💙
+          </footer>
+        </>
+      )}
+    </main>
   );
 }

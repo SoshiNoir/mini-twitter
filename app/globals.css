@@ -1,8 +1,8 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fff0f5; /* rosé clarinho (lavenderblush/rosé) */
+  --foreground: #171717; /* texto escuro */
 }
 
 @theme inline {
@@ -12,13 +12,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* removemos o dark mode fixo */
 body {
   background: var(--background);
   color: var(--foreground);
