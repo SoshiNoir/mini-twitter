@@ -368,53 +368,77 @@ export const posts: Post[] = [
     "id": 57,
     "date": "2025-09-02",
     "text": "Flertei com uma piada sobre namoro, usando música brasileira que ela gosta, acho que ela ficou receosa, tenho medo de ter estragado tudo.",
-    "comments": [],
     "media": ["/images/flertenamoro.jpg"],
   },
   {
     "id": 58,
     "date": "2025-09-07",
     "text": "Conversamos MUITO sobre sexo e como eu e ela nos sentimos quanto a isso, também pude ser honesto e expressar meu desejo quanto a ela, que cresce proporcionalmente ao respeito que ela me mostra.",
-    "comments": [],
     "media": ["/images/sonicpilantra.webp"],
   },
   {
     "id": 59,
     "date": "2025-09-07",
     "text": "Hoje eu estava muito cansado pois ajudei minha mãe com a feira, porém eu não suportaria a ideia de não ver ela, então fui mesmo assim, e foi ótimo, me senti muito feliz por estar com ela, mesmo cansado. Acho que isso é amor de verdade, quando a presença do outro é mais importante que qualquer desconforto ou dificuldade.",
-    "comments": [],
   },
   {
     "id": 60,
     "date": "2025-09-03",
     "text": "Ela me manda coisas aleatórias diariamente, parece querer compartilhar da existência comigo, acho muito fofo, Laís Caldas na geladeira para referencia:",
-    "comments": [],
     "media": ["/images/laiskdvc.mp4"],
   },
   {
     "id": 61,
     "date": "2025-09-07",
     "text": "Eu ganhei um 'escalda pés'' no sorteio, não sei pra que serve então vou entregar pra Cacau, o curioso é que eu tinha 4 bilhetes participantes e eu só ganhei com o único que eu não escrevi, senti como se fosse um sinal pra que eu aprendesse a aceitar as coisas com facilidade, alegria e glória sem depender de uma ação minha.",
-    "comments": [],
     "media": ["/images/sorteio.mp4"],
   },
   {
     "id": 62,
     "date": "2025-09-07",
     "text": "Comprei um doce de figo pra ela, logo depois ela disse que estava com vontade de comer figo, colei uns post-its no doce com os dizeres ''um doce para meu maracujá azedo'' a esse ponto eu já queria chamar ela de minha e apesar de achar que ela gostaria disso eu quis ser sútil e ir devagar.",
-    "comments": [],
   },
   {
     "id": 63,
     "date": "2025-09-07",
     "text": "A Bia ganhou um puxa-saco de crochê no sorteio da feira de artesanato! Talvez isso não devesse estar no diário mas tô seguindo meu coração.",
-    "comments": [],
     "media": ["/images/sorteiobia.jpg"],
   },
   {
     "id": 64,
-    "data": "12 de Setembro de 2025",
-    "conteudo": "Sinto um pouco de vergonha de escrever isso mas se algum dia você for ler isso, significa que deu tudo certo então tudo bem dizer, você praticamente me ensinou na prática, somente existindo, o que tesão. Eu nunca tinha sentido isso por ninguém, e olha que eu já me apaixonei algumas vezes, mas com você é diferente, é algo que eu não sei explicar direito, só sei que é bom demais. Obrigado por ser você, por ser tão incrível e por me fazer tão feliz. Mal posso esperar para ver onde essa nossa jornada vai nos levar. ❤️",
-    "comentarios": []
+    "date": "2025-09-12",
+    "text": "Sinto um pouco de vergonha de escrever isso mas se algum dia você for ler isso, significa que deu tudo certo então tudo bem dizer, você praticamente me ensinou na prática, somente existindo, o que tesão. Eu nunca tinha sentido isso por ninguém, e olha que eu já me apaixonei algumas vezes, mas com você é diferente, é algo que eu não sei explicar direito, só sei que é bom demais. Obrigado por ser você, por ser tão incrível e por me fazer tão feliz. Mal posso esperar para ver onde essa nossa jornada vai nos levar. ❤️",
+  },
+  {
+    "id": 65,
+    "date": "2025-09-04",
+    "text": "Ela me chamou pra sair com as amigas dela, lá em Uberlândia, to meio receoso, mas acho que vai ser legal.",
+    "media": ["/images/bitufo.jpg"],
+    "comments": [{
+      "id": 1,
+      "author": "Pitufo",
+      "text": "Tive a ideia de fazer um slide pra me apresentar pra elas!",
+      "date": "2025-09-04",
+    },
+    {
+      "id": 2,
+      "author": "Pitufo",
+      "text": "Aqui está! https://www.canva.com/design/DAGx3NRj-K8/Lvg2lJta2u5wANWfYzSj1g/edit?utm_content=DAGx3NRj-K8&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton",
+      "date": "2025-09-04",
+    },]
+  },
+  {
+    "id": 66,
+    "date": "2025-07-10",
+    "text": "Ela usa essa figurinha do Sonic pilantra excessivamente, acho engraçado, mas ela faz até pessoalmente.",
+    "media": ["/images/sonicpilantra.webp"],
+    "comments": []
+  },
+  {
+    "id": 67,
+    "date": "2025-09-11",
+    "text": "Ela sempre faz questão de me incluir em tudo que faz, mesmo distante, acho isso fofo, Laís Caldas deitada pra referencia:",
+    "media": ["/images/laiscaldas.jpg, /images/laiscaldas2.jpg"],
+    "comments": []
   },
 ];
