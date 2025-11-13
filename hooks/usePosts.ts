@@ -2,28 +2,39 @@
 
 import type { Post } from '@/types/post';
 import { useEffect, useState } from 'react';
-import { postsData } from '../data/posts'; // ✅ named export
+// usa o export atual de data/posts
+import { posts as initialPosts } from '@/data/posts';
 
 const STORAGE_KEY = 'mini-twitter-posts';
 
 export function usePosts() {
   const [posts, setPosts] = useState<Post[]>([]);
 
-  // Carregar do localStorage OU do JSON inicial
+  // Carregar do localStorage OU dos posts iniciais
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      setPosts(JSON.parse(saved));
-    } else {
-      setPosts(postsData); // ✅ usa os posts iniciais do arquivo .ts
+    try {
+      if (typeof window === 'undefined') {
+        setPosts(initialPosts);
+        return;
+      }
+
+      const saved = window.localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        setPosts(JSON.parse(saved));
+      } else {
+        setPosts(initialPosts);
+      }
+    } catch {
+      setPosts(initialPosts);
     }
   }, []);
 
   // Sempre que mudar, salvar no localStorage
   useEffect(() => {
-    if (posts.length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
-    }
+    if (typeof window === 'undefined') return;
+    if (posts.length === 0) return;
+
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
   }, [posts]);
 
   // Adicionar post
@@ -32,26 +43,26 @@ export function usePosts() {
   }
 
   // Editar post
-  function editPost(id: number, atualizado: Partial<Post>) {
+  function editPost(id: Post['id'], atualizado: Partial<Post>) {
     setPosts((prev) =>
       prev.map((p) => (p.id === id ? { ...p, ...atualizado } : p))
     );
   }
 
-  // Adicionar comentário
-  function addComment(postId: number, autor: string, texto: string) {
+  // Adicionar comentário (usando comments, author, text, date)
+  function addComment(postId: Post['id'], author: string, text: string) {
     setPosts((prev) =>
       prev.map((p) =>
         p.id === postId
           ? {
             ...p,
-            comentarios: [
-              ...p.comentarios,
+            comments: [
+              ...(p.comments ?? []),
               {
                 id: Date.now(),
-                autor,
-                texto,
-                data: new Date().toISOString(),
+                author,
+                text,
+                date: new Date().toISOString(),
               },
             ],
           }

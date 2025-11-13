@@ -442,3 +442,5 @@ export const posts: Post[] = [
     "comments": []
   },
 ];
+
+export const postsData = posts;
