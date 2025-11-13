@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react';
 
 type View = 'senha' | 'intro' | 'timeline';
 
-const SECRET_WORD = 'brigadeiro';
+const SECRET_WORD = 'pitufagostosa123';
 
 type Grouped = Record<string, Post[]>;
 
@@ -85,8 +85,8 @@ export default function HomePage() {
           </h1>
           <p className='mb-4 text-sm text-rose-700'>
             Esse é um cantinho só nosso. Se você é{' '}
-            <span className='font-medium'>A</span> Anita certa, você sabe a
-            palavrinha mágica. ✨
+            <span className='font-medium'>A</span> Anita, você sabe a palavrinha
+            mágica. ✨
           </p>
           <form onSubmit={handleSenhaSubmit} className='space-y-3'>
             <input
